@@ -64,8 +64,6 @@ export default function LoginPage() {
                   placeholder="Correo electrónico"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  type="email"
-                  required
                 />
               </div>
               <div>
@@ -83,7 +81,6 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   minLength={6}
-                  required
                 />
               </div>
             </div>
