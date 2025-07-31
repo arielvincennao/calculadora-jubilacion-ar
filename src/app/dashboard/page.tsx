@@ -112,7 +112,7 @@ export default function Dashboard() {
                 Rol no válido
               </h2>
               <p className="text-gray-600 dark:text-gray-300">
-                El rol "{profile.role}" no es válido. Contacta al administrador.
+                El rol &quot;{profile.role}&quot; no es válido. Contacta al administrador.
               </p>
             </div>
           </div>

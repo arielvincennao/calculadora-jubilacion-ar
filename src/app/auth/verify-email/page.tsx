@@ -7,7 +7,6 @@ import { createClient } from '@/lib/supabase/client';
 export default function VerifyEmailPage() {
   const [message, setMessage] = useState('Verificando tu correo electrónico...');
   const [isVerified, setIsVerified] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -32,8 +31,6 @@ export default function VerifyEmailPage() {
       } catch (error) {
         setMessage('Hubo un error al verificar tu correo. Por favor, intenta nuevamente.');
         console.error('Error verifying email:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
