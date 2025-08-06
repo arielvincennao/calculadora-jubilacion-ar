@@ -2,6 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { Profile } from '@/hooks/useProfile';
+import Link from 'next/link';
 
 interface VerifiedDashboardProps {
   profile: Profile;
@@ -107,9 +108,9 @@ export default function VerifiedDashboard({ profile }: VerifiedDashboardProps) {
               </h3>
             </div>
             <div className="space-y-3">
-              <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+              <Link href="/calculo" className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors block text-center">
                 Nuevo Cálculo
-              </button>
+              </Link>
               <button className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
                 Generar Reporte
               </button>

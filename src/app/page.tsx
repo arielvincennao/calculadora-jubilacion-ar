@@ -1,5 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Link from 'next/link';
 
 export default function Home() {
   const steps = [
@@ -39,9 +40,11 @@ export default function Home() {
               <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10">
                 Ingresá tus años de aporte e ingresos para obtener una estimación precisa del monto jubilatorio.
               </p>
+              <Link href="/auth/login">
               <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105">
                 Comenzar a calcular
               </button>
+              </Link>
             </div>
           </div>
         </section>
@@ -128,24 +131,25 @@ export default function Home() {
                 </div>
               ))}
             </div>
-
             <div className="mt-12 text-center">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-flex items-center">
-                Calcular mi jubilación
-                <svg
-                  className="w-5 h-5 ml-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
+              <Link href="/auth/login">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg transition duration-300 transform hover:scale-105 inline-flex items-center">
+                  Calcular mi jubilación
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
+              </Link>
             </div>
           </div>
         </section>
