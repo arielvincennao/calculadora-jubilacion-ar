@@ -111,11 +111,11 @@ export default function VerifiedDashboard({ profile }: VerifiedDashboardProps) {
               <Link href="/calculo" className="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors block text-center">
                 Nuevo Cálculo
               </Link>
+              <Link href="/mis-calculos" className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors block text-center">
+                Mis Cálculos
+              </Link>
               <button className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
                 Generar Reporte
-              </button>
-              <button className="w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors">
-                Ver Historial
               </button>
             </div>
           </div>

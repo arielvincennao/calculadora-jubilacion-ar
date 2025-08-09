@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { CalculationService } from '@/lib/supabase/calculations';
 
 // Estilos DatePicker
 const datePickerStyles = `
@@ -95,9 +96,26 @@ interface MonthData {
   salary: number;
 }
 
+interface CalculationResult {
+  month: MonthData;
+  result: number;
+  formula: string;
+}
+
+interface CalculationSummary {
+  totalSalary: number;
+  averageSalary: number;
+  totalResult: number;
+  averageResult: number;
+  averageCoe: number;
+  totalDays: number;
+  totalMonths: number;
+}
+
 export default function CalculoPage() {
   const { user, loading: authLoading } = useAuth();
   const { profile, loading: profileLoading } = useProfile();
+
   const router = useRouter();
 
   const [calculationName, setCalculationName] = useState<string>('');
@@ -106,7 +124,11 @@ export default function CalculoPage() {
   const [endDate, setEndDate] = useState<Date | null>(new Date());
   const [isCalculating, setIsCalculating] = useState(false);
   const [showMonths, setShowMonths] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const [isPrinting, setIsPrinting] = useState(false);
   const [monthsData, setMonthsData] = useState<MonthData[]>([]);
+  const [calculationResults, setCalculationResults] = useState<CalculationResult[]>([]);
+  const [calculationSummary, setCalculationSummary] = useState<CalculationSummary | null>(null);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -152,6 +174,7 @@ export default function CalculoPage() {
       const months = generateMonths(startDate, endDate);
       setMonthsData(months);
       setShowMonths(true);
+      setShowResults(false);
     }
   };
 
@@ -161,17 +184,109 @@ export default function CalculoPage() {
     setMonthsData(updatedMonths);
   };
 
+  // Función para calcular el resultado mensual
+  const calculateMonthlyResult = (salary: number, coe: number, ud: number): number => {
+    if (coe === 0) return 0;
+    return salary * ((ud - coe) / coe + 1);
+  };
+
+  // Función para generar el informe
+  const generateReport = () => {
+    const results: CalculationResult[] = monthsData.map(month => {
+      const result = calculateMonthlyResult(month.salary, month.coe, udValue);
+      const formula = `${month.salary} * ((${udValue} - ${month.coe}) / ${month.coe} + 1) = ${result.toFixed(2)}`;
+
+      return {
+        month,
+        result,
+        formula
+      };
+    });
+
+    const totalSalary = monthsData.reduce((sum, month) => sum + month.salary, 0);
+    const averageSalary = totalSalary / monthsData.length;
+    const totalResult = results.reduce((sum, result) => sum + result.result, 0);
+    const averageResult = totalResult / results.length;
+    const averageCoe = monthsData.reduce((sum, month) => sum + month.coe, 0) / monthsData.length;
+    const totalDays = monthsData.reduce((sum, month) => sum + month.days, 0);
+
+    const summary: CalculationSummary = {
+      totalSalary,
+      averageSalary,
+      totalResult,
+      averageResult,
+      averageCoe,
+      totalDays,
+      totalMonths: monthsData.length
+    };
+
+    setCalculationResults(results);
+    setCalculationSummary(summary);
+    setShowResults(true);
+  };
+
   const handleCalculate = async () => {
     setIsCalculating(true);
 
-    // Simular cálculo
-    setTimeout(() => {
+    try {
+      // Generar el reporte
+      generateReport();
+
+      // Guardar en Supabase
+      const calculationData = {
+        name: calculationName || 'Cálculo sin nombre',
+        ud_value: udValue,
+        start_date: startDate?.toISOString().split('T')[0] || '',
+        end_date: endDate?.toISOString().split('T')[0] || '',
+        total_salary: monthsData.reduce((sum, month) => sum + month.salary, 0),
+        total_result: monthsData.reduce((sum, month) => sum + calculateMonthlyResult(month.salary, month.coe, udValue), 0),
+        average_coe: monthsData.reduce((sum, month) => sum + month.coe, 0) / monthsData.length,
+        total_months: monthsData.length,
+        months: monthsData.map(month => ({
+          year: month.year,
+          month: month.month,
+          month_name: month.monthName,
+          days: month.days,
+          coe: month.coe,
+          salary: month.salary,
+          result: calculateMonthlyResult(month.salary, month.coe, udValue)
+        }))
+      };
+
+      await CalculationService.createCalculation(calculationData);
+      
+      // Mostrar mensaje de éxito
+      alert('Cálculo guardado exitosamente');
+      
+    } catch (error) {
+      console.error('Error saving calculation:', error);
+      alert('Error al guardar el cálculo. Por favor, inténtalo de nuevo.');
+    } finally {
       setIsCalculating(false);
-      alert(`Funcionalidad en desarrollo`);
-    }, 2000);
+    }
   };
 
-  //const period = startDate && endDate ? calculatePeriod(startDate, endDate) : null;
+  const formatCurrency = (amount: number): string => {
+    return new Intl.NumberFormat('es-AR', {
+      style: 'currency',
+      currency: 'ARS',
+      minimumFractionDigits: 2
+    }).format(amount);
+  };
+
+  const handlePrint = () => {
+    setIsPrinting(true);
+    
+    // Esperar un momento para que el DOM se actualice
+    setTimeout(() => {
+      window.print();
+      
+      // Restaurar la vista después de imprimir
+      setTimeout(() => {
+        setIsPrinting(false);
+      }, 1000);
+    }, 100);
+  };
 
   if (authLoading || profileLoading) {
     return (
@@ -184,6 +299,8 @@ export default function CalculoPage() {
     );
   }
 
+
+
   if (!user || !profile || profile.role !== 'Verificado') {
     return null;
   }
@@ -191,10 +308,56 @@ export default function CalculoPage() {
   return (
     <>
       <style jsx global>{datePickerStyles}</style>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-        <div className="max-w-6xl mx-auto">
-          {/* Header */}
-          <div className="flex justify-between items-center mb-8">
+      <style jsx global>{`
+        @media print {
+          .no-print {
+            display: none !important;
+          }
+          .print-only {
+            display: block !important;
+          }
+          body {
+            background: white !important;
+            color: black !important;
+          }
+          .print-container {
+            padding: 20px !important;
+            margin: 0 !important;
+          }
+        }
+        @media screen {
+          .print-only {
+            display: none !important;
+          }
+        }
+      `}</style>
+      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 p-8 ${isPrinting ? 'print-container' : ''}`}>
+                  <div className="max-w-7xl mx-auto">
+            {/* Información de Impresión */}
+            {isPrinting && (
+              <div className="print-only mb-8">
+                <div className="text-center border-b-2 border-gray-300 pb-4 mb-6">
+                  <h1 className="text-2xl font-bold text-black mb-3">
+                    {calculationName || 'Cálculo sin nombre'}
+                  </h1>
+                  <div className="text-gray-700 space-y-1">
+                    <p className="text-lg">
+                      Período: {startDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} a {endDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                    </p>
+                    <p className="text-base">
+                      Generado el: {new Date().toLocaleDateString('es-ES', { 
+                        day: 'numeric', 
+                        month: 'long', 
+                        year: 'numeric' 
+                      })}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            {/* Header */}
+            <div className={`flex justify-between items-center mb-8 ${isPrinting ? 'no-print' : ''}`}>
             <div>
               <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
                 Nuevo Cálculo
@@ -246,7 +409,7 @@ export default function CalculoPage() {
               {/* Configuración UD y Período */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  
+
                   {/* Configuración UD */}
                   <div className="space-y-6">
                     <div className="border-b border-gray-200 dark:border-gray-700 pb-4">
@@ -411,7 +574,7 @@ export default function CalculoPage() {
                 </div>
               </div>
             </div>
-          ) : (
+          ) : !showResults ? (
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
                 <div className="flex justify-between items-center">
@@ -461,7 +624,7 @@ export default function CalculoPage() {
                 <h3 className="text-lg font-medium text-blue-800 dark:text-blue-200 mb-4">
                   Información del Cálculo
                 </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 text-sm text-blue-700 dark:text-blue-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-blue-700 dark:text-blue-300">
                   <div>
                     <span>Nombre: </span>
                     <span className="font-medium">{calculationName || 'Sin nombre'}</span>
@@ -479,10 +642,6 @@ export default function CalculoPage() {
                   <div>
                     <span>Total meses: </span>
                     <span className="font-medium">{monthsData.length}</span>
-                  </div>
-                  <div>
-                    <span>Total días: </span>
-                    <span className="font-medium">{monthsData.reduce((sum, month) => sum + month.days, 0)}</span>
                   </div>
                 </div>
               </div>
@@ -539,6 +698,183 @@ export default function CalculoPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          ) : (
+            /* Resultados del Cálculo */
+            <div className="space-y-6">
+              {/* Header de Resultados */}
+              <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                      Resultados del Cálculo
+                    </h2>
+                    <p className="text-gray-600 dark:text-gray-300 mt-1">
+                      Informe detallado del cálculo de jubilación
+                    </p>
+                  </div>
+
+                                     <div className={`flex gap-3 ${isPrinting ? 'no-print' : ''}`}>
+                     <button
+                       onClick={() => setShowResults(false)}
+                       className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                     >
+                       Volver
+                     </button>
+                     <button
+                       onClick={handlePrint}
+                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                     >
+                       <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                       </svg>
+                       Imprimir
+                     </button>
+                   </div>
+                </div>
+              </div>
+
+              {/* Información Adicional */}
+              <div className={`bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-green-800 dark:text-green-200">
+                      Cálculo Completado
+                    </h3>
+                    <div className="mt-2 text-sm text-green-700 dark:text-green-300">
+                      <p>
+                        El cálculo ha sido completado y guardado exitosamente. Puedes imprimir este informe o encontrarlo en el historial de tu perfil para referencia futura.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel de Resumen */}
+              {calculationSummary && (
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                  <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-6">
+                    Resumen del Cálculo
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                          <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Sueldo Total</p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(calculationSummary.totalSalary)}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                          <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Resultado Total</p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(calculationSummary.totalResult)}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+                          <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Promedio Mensual</p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">{formatCurrency(calculationSummary.averageResult)}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
+                      <div className="flex items-center">
+                        <div className="w-10 h-10 bg-yellow-100 dark:bg-yellow-900 rounded-lg flex items-center justify-center">
+                          <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                        <div className="ml-3">
+                          <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Meses</p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">{calculationSummary.totalMonths}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tabla de Resultados Detallados */}
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    Detalle Mensual
+                  </h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                    Resultados calculados para cada mes del período
+                  </p>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                    <thead className="bg-gray-50 dark:bg-gray-700">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Mes
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          COE
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Sueldo
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                          Resultado
+                        </th>
+
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                      {calculationResults.map((result, index) => (
+                        <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
+                            {result.month.monthName}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {result.month.coe}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                            {formatCurrency(result.month.salary)}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
+                            {formatCurrency(result.result)}
+                          </td>
+
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+
             </div>
           )}
         </div>

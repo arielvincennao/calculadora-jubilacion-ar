@@ -36,8 +36,9 @@ export function useProfile() {
           .eq('id', user.id)
           .single();
 
-          console.log('Profile loaded successfully:', data);
+        if (data) {
           setProfile(data);
+        }
         
         
       } catch (err) {
