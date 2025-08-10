@@ -25,6 +25,26 @@ export default function Navbar() {
         <div className="flex justify-between h-20">
           <div className="flex items-center">
             <Link href="/" className="flex-shrink-0 flex items-center">
+              {/* Bandera Argentina */}
+              <div className="mr-3 flex-shrink-0">
+                <svg width="32" height="24" viewBox="0 0 32 24" className="rounded-sm shadow-sm">
+                  {/* Fondo blanco */}
+                  <rect width="32" height="24" fill="#ffffff"/>
+                  {/* Franja azul superior */}
+                  <rect width="32" height="8" fill="#6f4c9b"/>
+                  {/* Franja azul inferior */}
+                  <rect y="16" width="32" height="8" fill="#6f4c9b"/>
+                  {/* Sol de Mayo */}
+                  <g transform="translate(16, 12)">
+                    <circle r="3" fill="#f4d03f"/>
+                    <g fill="#f4d03f">
+                      {/* Rayos del sol */}
+                      <path d="M-4,0 L-6,0 M4,0 L6,0 M0,-4 L0,-6 M0,4 L0,6"/>
+                      <path d="M-2.8,-2.8 L-4,-4 M2.8,-2.8 L4,-4 M-2.8,2.8 L-4,4 M2.8,2.8 L4,4"/>
+                    </g>
+                  </g>
+                </svg>
+              </div>
               <span className="text-xl sm:text-2xl font-bold text-blue-600 dark:text-blue-400">
                 Calculadora Jubilación
               </span>

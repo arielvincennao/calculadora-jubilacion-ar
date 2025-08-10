@@ -14,7 +14,7 @@ export default function GuestDashboard({ profile }: GuestDashboardProps) {
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
             Dashboard
           </h1>
           <button

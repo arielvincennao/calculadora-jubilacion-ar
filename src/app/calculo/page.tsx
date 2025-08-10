@@ -345,6 +345,9 @@ export default function CalculoPage() {
                       Período: {startDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} a {endDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
                     </p>
                     <p className="text-base">
+                      Valor UD: {udValue}
+                    </p>
+                    <p className="text-base">
                       Generado el: {new Date().toLocaleDateString('es-ES', { 
                         day: 'numeric', 
                         month: 'long', 
@@ -398,7 +401,7 @@ export default function CalculoPage() {
                     value={calculationName}
                     onChange={(e) => setCalculationName(e.target.value)}
                     className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
-                    placeholder="Ej: Cálculo Periodo 2010 a 2025"
+                    placeholder={'Ej: Cálculo Periodo 2010 a 2025'}
                   />
                   <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
                     Este nombre te ayudará a identificar y organizar tus cálculos.
@@ -713,14 +716,7 @@ export default function CalculoPage() {
                       Informe detallado del cálculo de jubilación
                     </p>
                   </div>
-
-                                     <div className={`flex gap-3 ${isPrinting ? 'no-print' : ''}`}>
-                     <button
-                       onClick={() => setShowResults(false)}
-                       className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                     >
-                       Volver
-                     </button>
+                  <div className={`flex gap-3 ${isPrinting ? 'no-print' : ''}`}>
                      <button
                        onClick={handlePrint}
                        className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
@@ -751,6 +747,29 @@ export default function CalculoPage() {
                         El cálculo ha sido completado y guardado exitosamente. Puedes imprimir este informe o encontrarlo en el historial de tu perfil para referencia futura.
                       </p>
                     </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Información del Cálculo */}
+              <div className={`bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+                <h3 className="text-lg font-medium text-blue-800 dark:text-blue-200 mb-4">
+                  Información del Cálculo
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-blue-700 dark:text-blue-300">
+                  <div>
+                    <span>Nombre: </span>
+                    <span className="font-medium">{calculationName || 'Sin nombre'}</span>
+                  </div>
+                  <div>
+                    <span>Valor UD: </span>
+                    <span className="font-medium">{udValue} UD</span>
+                  </div>
+                  <div>
+                    <span>Período: </span>
+                    <span className="font-medium">
+                      {startDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} - {endDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
+                    </span>
                   </div>
                 </div>
               </div>
