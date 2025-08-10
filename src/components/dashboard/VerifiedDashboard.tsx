@@ -126,7 +126,7 @@ export default function VerifiedDashboard({ profile }: VerifiedDashboardProps) {
             </div>
             <div className="space-y-3">
               <div className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-300">Cálculos realizados</span>
+                <span className="text-gray-600 dark:text-gray-300">Cálculos actuales</span>
                 <span className="font-semibold text-gray-900 dark:text-white">
                   {calculationsLoading ? (
                     <div className="animate-pulse bg-gray-300 dark:bg-gray-600 h-4 w-8 rounded"></div>

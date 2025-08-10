@@ -92,7 +92,7 @@ export default function EditarCalculoPage({ params }: { params: Promise<{ id: st
       }));
       setMonthsData(updatedMonths);
     }
-  }, [udValue, monthsData]);
+  }, [udValue]);
 
   const handleSave = async () => {
     try {
