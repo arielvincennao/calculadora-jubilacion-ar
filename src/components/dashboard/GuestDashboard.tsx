@@ -2,6 +2,8 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { Profile } from '@/hooks/useProfile';
+import { useState } from 'react';
+import ContactAdminModal from '@/components/ContactAdminModal';
 
 interface GuestDashboardProps {
   profile: Profile;
@@ -9,6 +11,10 @@ interface GuestDashboardProps {
 
 export default function GuestDashboard({ profile }: GuestDashboardProps) {
   const { signOut } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
@@ -78,7 +84,7 @@ export default function GuestDashboard({ profile }: GuestDashboardProps) {
               </h3>
             </div>
             <p className="text-gray-600 dark:text-gray-300">
-              Como usuario invitado, tienes acceso limitado a las funcionalidades básicas del sistema.
+             Recuerda solicitar la verificación de tu cuenta para acceder a las funcionalidades de la plataforma.
             </p>
           </div>
 
@@ -125,12 +131,13 @@ export default function GuestDashboard({ profile }: GuestDashboardProps) {
             <p className="text-gray-600 dark:text-gray-300 mb-4">
               Para acceder a funcionalidades avanzadas, contacta al administrador para solicitar la verificación de tu cuenta.
             </p>
-            <button className="w-full px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors">
+            <button onClick={openModal} className="w-full px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700 transition-colors">
               Contactar Administrador
             </button>
           </div>
         </div>
       </div>
+      <ContactAdminModal isOpen={isModalOpen} onClose={closeModal} />
     </div>
   );
 } 

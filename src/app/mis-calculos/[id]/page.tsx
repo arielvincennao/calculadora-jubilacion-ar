@@ -148,7 +148,7 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
           }
         }
       `}</style>
-      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 p-8 ${isPrinting ? 'print-container' : ''}`}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-8 ${isPrinting ? 'print-container' : ''}`}>
         <div className="max-w-7xl mx-auto">
           {/* Información de Impresión */}
           {isPrinting && (
@@ -173,28 +173,28 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
           )}
 
           {/* Header */}
-          <div className={`flex justify-between items-center mb-8 ${isPrinting ? 'no-print' : ''}`}>
+          <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 ${isPrinting ? 'no-print' : ''}`}>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Ver Cálculo
               </h1>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Link
                 href="/mis-calculos"
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
               >
                 Volver
               </Link>
               <Link
                 href={`/mis-calculos/${calculation.id}/editar`}
-                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+                className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-center"
               >
                 Editar
               </Link>
               <button
                 onClick={handlePrint}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center"
               >
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -205,7 +205,7 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
           </div>
 
           {/* Información del Cálculo */}
-          <div className={`bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+          <div className={`bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6 ${isPrinting ? 'no-print' : ''}`}>
             <h3 className="text-lg font-medium text-blue-800 dark:text-blue-200 mb-4">
               Información del Cálculo
             </h3>
@@ -228,11 +228,11 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
           </div>
           <br />
           {/* Panel de Resumen */}
-          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6">
             <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-6">
               Resumen del Cálculo
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
                 <div className="flex items-center">
                   <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
@@ -292,7 +292,7 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
           <br />
           {/* Tabla de Resultados Detallados */}
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 Detalle Mensual
               </h3>
@@ -305,16 +305,16 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
               <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead className="bg-gray-50 dark:bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Mes
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       COE
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Sueldo
                     </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                    <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                       Resultado
                     </th>
                   </tr>
@@ -322,16 +322,16 @@ export default function VerCalculoPage({ params }: { params: Promise<{ id: strin
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                   {calculation.months.map((month) => (
                     <tr key={month.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
                         {month.month_name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {month.coe}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                         {formatCurrency(month.salary)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
                         {formatCurrency(month.result)}
                       </td>
                     </tr>

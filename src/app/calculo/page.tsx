@@ -331,7 +331,7 @@ export default function CalculoPage() {
           }
         }
       `}</style>
-      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 p-8 ${isPrinting ? 'print-container' : ''}`}>
+      <div className={`min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-8 ${isPrinting ? 'print-container' : ''}`}>
                   <div className="max-w-7xl mx-auto">
             {/* Información de Impresión */}
             {isPrinting && (
@@ -360,9 +360,9 @@ export default function CalculoPage() {
             )}
             
             {/* Header */}
-            <div className={`flex justify-between items-center mb-8 ${isPrinting ? 'no-print' : ''}`}>
+            <div className={`flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 ${isPrinting ? 'no-print' : ''}`}>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">
                 Nuevo Cálculo
               </h1>
               <p className="text-gray-600 dark:text-gray-300 mt-2">
@@ -371,7 +371,7 @@ export default function CalculoPage() {
             </div>
             <Link
               href="/dashboard"
-              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+              className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors text-center w-full sm:w-auto"
             >
               Volver al Dashboard
             </Link>
@@ -381,7 +381,7 @@ export default function CalculoPage() {
             /* Panel Principal */
             <div className="space-y-6">
               {/* Nombre del Cálculo */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
                 <div className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
                     Nombre del Cálculo
@@ -410,8 +410,8 @@ export default function CalculoPage() {
               </div>
 
               {/* Configuración UD y Período */}
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8">
 
                   {/* Configuración UD */}
                   <div className="space-y-6">
@@ -449,7 +449,7 @@ export default function CalculoPage() {
                         </p>
                       </div>
 
-                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                      <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 sm:p-4">
                         <div className="flex items-start">
                           <div className="flex-shrink-0">
                             <svg className="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -520,7 +520,7 @@ export default function CalculoPage() {
                       </div>
 
                       {/* Información Adicional */}
-                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-4">
+                      <div className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg p-3 sm:p-4">
                         <div className="flex items-start">
                           <div className="flex-shrink-0">
                             <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
@@ -548,14 +548,14 @@ export default function CalculoPage() {
                   <div className="flex flex-col sm:flex-row gap-4 justify-end">
                     <Link
                       href="/dashboard"
-                      className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
+                      className="px-6 py-3 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center w-full sm:w-auto"
                     >
                       Cancelar
                     </Link>
                     <button
                       onClick={handleGenerateMonths}
                       disabled={!startDate || !endDate || startDate > endDate || udValue <= 0}
-                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                      className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center w-full sm:w-auto"
                     >
                       Siguiente
                       <svg
@@ -580,7 +580,7 @@ export default function CalculoPage() {
           ) : !showResults ? (
             <div className="space-y-6">
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       Configuración de Meses
@@ -589,17 +589,17 @@ export default function CalculoPage() {
                       Configura el COE y sueldo para cada mes del período seleccionado
                     </p>
                   </div>
-                  <div className="flex gap-3">
+                  <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
                     <button
                       onClick={() => setShowMonths(false)}
-                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                      className="px-4 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-center"
                     >
                       Volver
                     </button>
                     <button
                       onClick={handleCalculate}
                       disabled={isCalculating}
-                      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center"
+                      className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                     >
                       {isCalculating ? (
                         <>
@@ -623,7 +623,7 @@ export default function CalculoPage() {
               </div>
 
               {/* Información del Cálculo */}
-              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6">
                 <h3 className="text-lg font-medium text-blue-800 dark:text-blue-200 mb-4">
                   Información del Cálculo
                 </h3>
@@ -652,7 +652,7 @@ export default function CalculoPage() {
               {/* Lista de Meses */}
               <div className="space-y-4">
                 {monthsData.map((month, index) => (
-                  <div key={`${month.year}-${month.month}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                  <div key={`${month.year}-${month.month}`} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 sm:p-6">
                     <div className="flex items-center justify-between mb-4">
                       <h3 className="text-lg font-semibold text-gray-900 dark:text-white capitalize">
                         {month.monthName}
@@ -707,7 +707,7 @@ export default function CalculoPage() {
             <div className="space-y-6">
               {/* Header de Resultados */}
               <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
-                <div className="flex justify-between items-center">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
                     <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                       Resultados del Cálculo
@@ -716,10 +716,10 @@ export default function CalculoPage() {
                       Informe detallado del cálculo de jubilación
                     </p>
                   </div>
-                  <div className={`flex gap-3 ${isPrinting ? 'no-print' : ''}`}>
+                  <div className={`flex gap-3 w-full sm:w-auto ${isPrinting ? 'no-print' : ''}`}>
                      <button
                        onClick={handlePrint}
-                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center"
+                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center w-full sm:w-auto"
                      >
                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
@@ -731,7 +731,7 @@ export default function CalculoPage() {
               </div>
 
               {/* Información Adicional */}
-              <div className={`bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+              <div className={`bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg p-4 sm:p-6 ${isPrinting ? 'no-print' : ''}`}>
                 <div className="flex items-start">
                   <div className="flex-shrink-0">
                     <svg className="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
@@ -752,7 +752,7 @@ export default function CalculoPage() {
               </div>
 
               {/* Información del Cálculo */}
-              <div className={`bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6 ${isPrinting ? 'no-print' : ''}`}>
+              <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6">
                 <h3 className="text-lg font-medium text-blue-800 dark:text-blue-200 mb-4">
                   Información del Cálculo
                 </h3>
@@ -771,16 +771,20 @@ export default function CalculoPage() {
                       {startDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })} - {endDate?.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })}
                     </span>
                   </div>
+                  <div>
+                    <span>Total meses: </span>
+                    <span className="font-medium">{monthsData.length}</span>
+                  </div>
                 </div>
               </div>
 
               {/* Panel de Resumen */}
               {calculationSummary && (
-                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-6">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4 sm:p-6">
                   <h3 className="text-xl font-bold text-blue-900 dark:text-blue-100 mb-6">
                     Resumen del Cálculo
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm">
                       <div className="flex items-center">
                         <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
@@ -842,7 +846,7 @@ export default function CalculoPage() {
 
               {/* Tabla de Resultados Detallados */}
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-                <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+                <div className="px-4 sm:px-6 py-4 border-b border-gray-200 dark:border-gray-700">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     Detalle Mensual
                   </h3>
@@ -855,16 +859,16 @@ export default function CalculoPage() {
                   <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                     <thead className="bg-gray-50 dark:bg-gray-700">
                       <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                           Mes
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                           COE
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                           Sueldo
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                        <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                           Resultado
                         </th>
 
@@ -873,16 +877,16 @@ export default function CalculoPage() {
                     <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                       {calculationResults.map((result, index) => (
                         <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white capitalize">
                             {result.month.monthName}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {result.month.coe}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {formatCurrency(result.month.salary)}
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
+                          <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600 dark:text-green-400">
                             {formatCurrency(result.result)}
                           </td>
 
